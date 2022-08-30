@@ -23,4 +23,5 @@
 ***
 
 Соавторы: https://github.com/vik1109
-Ревьюер: Федор Мушенок
+
+Ревьюер: https://github.com/PhySci
