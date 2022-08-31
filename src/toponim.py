@@ -88,7 +88,7 @@ if __name__ == "__main__":
     df = pd.DataFrame(columns=['date', 'user', 'msg'])
 
     # цикл чтения всех файлов. В случае не соблюдения формата файлов - ловим ошибку
-    for filename in glob.glob(paths.path_from + '\*.txt'):
+    for filename in glob.glob(os.path.join(paths.path_from, '*.txt')):
         print(os.path.join(paths.path_from, filename))
         try:
             with open(os.path.join(paths.path_from, filename), 'r', encoding='utf8') as f:
