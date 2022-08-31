@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker run --rm -it -v $(pwd)/messages:/opt/app/messages  pollenclub:v0.1
+docker run --rm -it -v $(pwd)/messages:/opt/app/messages  pollenclub:v0.2
