@@ -88,18 +88,18 @@ if __name__ == "__main__":
     df = pd.DataFrame(columns=['date', 'user', 'msg'])
 
     # цикл чтения всех файлов. В случае не соблюдения формата файлов - ловим ошибку
-    try:
-        for filename in glob.glob(paths.path_from + '\*.txt'):
-            print(os.path.join(paths.path_from, filename))
+    for filename in glob.glob(paths.path_from + '\*.txt'):
+        print(os.path.join(paths.path_from, filename))
+        try:
             with open(os.path.join(paths.path_from, filename), 'r', encoding='utf8') as f:
                 df = pd.concat(
                     [base_create(f.read().split('\n--------------------------\n')),
                      df]
                 )
+        except (FileExistsError, IOError):
+            print("ошибка чтения файла")
+            exit()
 
-    except:
-        print("ошибка чтения файла")
-        exit()
     toponims = ToponimParserYargo(df)
     toponims.pars_all()
     print(toponims.df.head())
