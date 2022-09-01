@@ -9,7 +9,7 @@
 import pandas as pd
 from yargo_rules import CITY, RESP_RULE, KRAI_RULE, OBL_RULE, OKRUG_RULE, MSK_R_RULE, RAION_RULE
 from yargy import Parser
-
+import os
 
 class ToponimParserYargo:
 
@@ -29,11 +29,12 @@ class ToponimParserYargo:
         self.df['raion'] = ''
 
         # загрузка классификаторов
-        self.cities_classifier = pd.read_csv('dict/cities_classifier.csv', sep=';', encoding='utf-8')
-        self.regions_classifier = pd.read_csv('dict/regions.csv', sep=';', encoding='utf-8')
-        self.krai_classifier = pd.read_csv('dict/krai.csv', sep=';', encoding='utf-8')
-        self.resp_classifier = pd.read_csv('dict/resp.csv', sep=';', encoding='utf-8')
-        self.okrug_classifier = pd.read_csv('dict/okrug.csv', sep=';', encoding='utf-8')
+        file_path = os.path.dirname(__file__)
+        self.cities_classifier = pd.read_csv(os.path.join(file_path, "dict", "cities_classifier.csv"), sep=';', encoding='utf-8')
+        self.regions_classifier = pd.read_csv(os.path.join(file_path, "dict", "regions.csv"), sep=';', encoding='utf-8')
+        self.krai_classifier = pd.read_csv(os.path.join(file_path, "dict", "krai.csv"), sep=';', encoding='utf-8')
+        self.resp_classifier = pd.read_csv(os.path.join(file_path, "dict", "resp.csv"), sep=';', encoding='utf-8')
+        self.okrug_classifier = pd.read_csv(os.path.join(file_path, "dict", "okrug.csv"), sep=';', encoding='utf-8')
 
     def pars_all(self):
         self.toponim_parser()
