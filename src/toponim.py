@@ -20,7 +20,7 @@ def validate_path(path: str) -> str:
 
 
 # преобразовываем текстовый файл в DataFrame со столбцами: ['date', 'user', 'msg']
-def base_create(msg) -> pd.DataFrame:
+def convert_file(msg) -> pd.DataFrame:
     listed_data = []  # будущий список сообщений
     tmp_msg = ''  # временная переменная для сообщения
     tmp_user = ''  # временная переменная для имени пользователя
@@ -93,7 +93,7 @@ if __name__ == "__main__":
         try:
             with open(os.path.join(paths.path_from, filename), 'r', encoding='utf8') as f:
                 df = pd.concat(
-                    [base_create(f.read().split('\n--------------------------\n')),
+                    [convert_file(f.read().split('\n--------------------------\n')),
                      df]
                 )
         except (FileExistsError, IOError):
