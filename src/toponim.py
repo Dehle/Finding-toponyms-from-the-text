@@ -8,14 +8,16 @@ import pandas as pd
 import argparse
 import glob
 from datetime import datetime
+import logging
 from toponim_parser_yargo import ToponimParserYargo
+
+_logger = logging.getLogger(__name__)
 
 
 # Валидация пути прописанного в аргументах
 def validate_path(path: str) -> str:
     if (not os.path.isabs(path)) or (not os.path.exists(path)):
         raise argparse.ArgumentTypeError(f'Absolute and exist path required, got "{path}"')
-
     return os.path.normpath(path)
 
 
@@ -65,6 +67,36 @@ def convert_file(msg) -> pd.DataFrame:
     return df
 
 
+def setup_logging(logfile=None, loglevel="INFO"):
+    """
+
+    :param logfile:
+    :param loglevel:
+    :return:
+    """
+    if logfile is None:
+        logfile = os.path.join(os.path.dirname(__file__), "parser.log")
+
+    loglevel = getattr(logging, loglevel)
+
+    logger = logging.getLogger()
+    logger.setLevel(loglevel)
+    fmt = '%(asctime)s: %(levelname)s: %(filename)s: ' + \
+          '%(funcName)s(): %(lineno)d: %(message)s'
+    formatter = logging.Formatter(fmt)
+
+    fh = logging.FileHandler(filename=logfile)
+    fh.setLevel(loglevel)
+    fh.setFormatter(formatter)
+
+    ch = logging.StreamHandler()
+    ch.setLevel(loglevel)
+    ch.setFormatter(formatter)
+
+    logger.addHandler(fh)
+    logger.addHandler(ch)
+
+
 if __name__ == "__main__":
     # парсим коммандную строку. Путь по умолчанию - папка из которой запущен скрипт.
     parser = argparse.ArgumentParser(description='My example explanation')
@@ -82,27 +114,37 @@ if __name__ == "__main__":
         help='Folder for recording a report',
         default=os.path.abspath(os.curdir)
     )
-    paths = parser.parse_args()
+    parser.add_argument(
+        "--log_path",
+        metavar="PATH",
+        type=validate_path,
+        help="Folder for log file",
+        default=os.path.abspath(os.curdir)
+
+    )
+    args = parser.parse_args()
+
+    setup_logging(os.path.join(args.log_path, "parser.log"), "INFO")
 
     # создаем DataFrame для хранения сообщений
     df = pd.DataFrame(columns=['date', 'user', 'msg'])
 
     # цикл чтения всех файлов. В случае не соблюдения формата файлов - ловим ошибку
-    for filename in glob.glob(os.path.join(paths.path_from, '*.txt')):
-        print(os.path.join(paths.path_from, filename))
+    for filename in glob.glob(os.path.join(args.path_from, '*.txt')):
+        print(os.path.join(args.path_from, filename))
+        file_path = os.path.join(args.path_from, filename)
         try:
-            with open(os.path.join(paths.path_from, filename), 'r', encoding='utf8') as f:
+            with open(file_path, 'r', encoding='utf8') as f:
                 df = pd.concat(
                     [convert_file(f.read().split('\n--------------------------\n')),
                      df]
                 )
-        except (FileExistsError, IOError):
-            print("ошибка чтения файла")
+        except IOError as err:
+            _logger.error("File read error: %s, %s", file_path, repr(err))
             exit()
 
     toponims = ToponimParserYargo(df)
     toponims.pars_all()
-    print(toponims.df.head())
     # название отчета формируется из слова report_ и текущуй даты и текущего времени.
-    report = os.path.join(paths.path_to, 'report_' + str(datetime.now().strftime("%d_%m_%Y_%H_%M_%S")) + '.csv')
+    report = os.path.join(args.path_to, 'report_' + str(datetime.now().strftime("%d_%m_%Y_%H_%M_%S")) + '.csv')
     toponims.to_csv(report)
