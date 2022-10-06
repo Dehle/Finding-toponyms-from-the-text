@@ -30,6 +30,9 @@ class ToponimParserYargo:
         self.df['okr'] = ''
         self.df['msk_r'] = ''
         self.df['raion'] = ''
+        self.df["drugs"] = ""
+        self.df["symptoms"] = ""
+        self.df["allergens"] = ""
 
         # загрузка классификаторов
         file_path = os.path.dirname(__file__)
