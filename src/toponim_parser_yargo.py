@@ -30,6 +30,9 @@ class ToponimParserYargo:
         self.df['okr'] = ''
         self.df['msk_r'] = ''
         self.df['raion'] = ''
+        self.df["drugs"] = ""
+        self.df["symptoms"] = ""
+        self.df["allergens"] = ""
 
         # загрузка классификаторов
         file_path = os.path.dirname(__file__)
@@ -50,9 +53,9 @@ class ToponimParserYargo:
         self.pesp_to_city()
         self.city_id()
 
-    def to_csv(self, name='DB/msg.csv'):
+    def to_csv(self, name):
         self.df.to_csv(name, sep=';', encoding='utf-8-sig')
-        _logger.info("Output file is saved.")
+        _logger.info("Output file is saved to %s", name)
 
     def toponim_parser(self):
         _logger.info('start')

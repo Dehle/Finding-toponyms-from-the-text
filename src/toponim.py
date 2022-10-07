@@ -131,8 +131,8 @@ if __name__ == "__main__":
 
     # цикл чтения всех файлов. В случае не соблюдения формата файлов - ловим ошибку
     for filename in glob.glob(os.path.join(args.path_from, '*.txt')):
-        print(os.path.join(args.path_from, filename))
         file_path = os.path.join(args.path_from, filename)
+        _logger.info(file_path)
         try:
             with open(file_path, 'r', encoding='utf8') as f:
                 df = pd.concat(
