@@ -194,8 +194,23 @@ Okrug = fact(
     ['name']
 )
 
+XMAO = morph_pipeline({
+    'ХМАО',
+    'Югра'
+}).interpretation(Okrug.name.const('Ханты-Мансийский'))
+
+YANAO = morph_pipeline({
+    'ЯНАО'
+}).interpretation(Okrug.name.const('Ямало-Ненецкий'))
+
 OKRUG_NAME = morph_pipeline(DICT_OKRUG).interpretation(Okrug.name.normalized().custom(printer))
-OKRUG_RULE = rule(OKRUG_NAME).interpretation(Okrug)
+OKRUG_RULE = rule(
+    or_(
+        OKRUG_NAME,
+        XMAO,
+        YANAO
+        )
+    ).interpretation(Okrug)
 
 #####################################################
 #                                                   #

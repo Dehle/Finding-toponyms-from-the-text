@@ -29,7 +29,8 @@ class ToponimParserYargo:
         self.df['obl'] = ''
         self.df['okr'] = ''
         self.df['msk_r'] = ''
-        self.df['raion'] = ''
+        #В данный момент района не используются
+        #self.df['raion'] = ''
         self.df["drugs"] = ""
         self.df["symptoms"] = ""
         self.df["allergens"] = ""
@@ -108,9 +109,10 @@ class ToponimParserYargo:
         parser = Parser(MSK_R_RULE)
         self.df['msk_r'] = self.df.msg.apply(lambda x: self.toponim_handling([match.fact.name for match in parser.findall(x)]))
         _logger.info('MSK_R_RULE')
-        parser = Parser(RAION_RULE)
-        self.df['raion'] = self.df.msg.apply(lambda x: self.toponim_handling([match.fact.name for match in parser.findall(x)]))
-        _logger.info('RAION_RULE')
+        #В данный момент район не используются
+        #parser = Parser(RAION_RULE)
+        #self.df['raion'] = self.df.msg.apply(lambda x: self.toponim_handling([match.fact.name for match in parser.findall(x)]))
+        #_logger.info('RAION_RULE')
 
         _logger.info('msg done')
 
